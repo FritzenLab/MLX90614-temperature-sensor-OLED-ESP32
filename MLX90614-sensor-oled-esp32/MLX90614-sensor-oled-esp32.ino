@@ -27,7 +27,7 @@ void setup() {
   // sensor to work, since it communicates on that speed only. 
   // Otherwise the 0.49" OLED display would use 400kHz.
   u8g2.setBusClock(100000);
-  u8g2.setFont(u8g2_font_t0_17_tn);
+  u8g2.setFont(u8g2_font_10x20_tf);
   Serial.begin(115200);
   while (!Serial);
 
@@ -53,9 +53,13 @@ void loop() {
     Serial.println();
     
     u8g2.clearBuffer();			
+    // String() constructor with decimal-places argument — Arduino String reference
+    // https://www.arduino.cc/reference/en/language/variables/data-types/string/
+    String tempStr = String(t, 1) + "C";
     u8g2.setCursor(0, 20);
-    u8g2.drawStr(40, 20, "C");
-    u8g2.print(t);  
+    const char* myCharPointer = tempStr.c_str();
+    u8g2.drawStr(5, 20, myCharPointer);
+    Serial.println(u8g2.getStrWidth(myCharPointer));
     u8g2.sendBuffer();	
   }
   if(millis() - ledTime > 300){
