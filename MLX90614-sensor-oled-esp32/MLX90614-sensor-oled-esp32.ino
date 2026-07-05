@@ -19,6 +19,7 @@ float t= 0;
 unsigned long sensorTime = 0;
 unsigned long ledTime = 0;
 bool ledStatus = false;
+const char* varToPrint = " ";
 
 void setup() {
   pinMode(LED, OUTPUT);
@@ -57,9 +58,9 @@ void loop() {
     // https://www.arduino.cc/reference/en/language/variables/data-types/string/
     String tempStr = String(t, 1) + "C";
     u8g2.setCursor(0, 20);
-    const char* myCharPointer = tempStr.c_str();
-    u8g2.drawStr(5, 20, myCharPointer);
-    Serial.println(u8g2.getStrWidth(myCharPointer));
+    varToPrint = tempStr.c_str();
+    u8g2.drawStr(5, 20, varToPrint);
+    Serial.println(u8g2.getStrWidth(varToPrint));
     u8g2.sendBuffer();	
   }
   if(millis() - ledTime > 300){
