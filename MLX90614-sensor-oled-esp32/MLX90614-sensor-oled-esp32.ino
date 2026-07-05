@@ -17,19 +17,22 @@ U8G2_SSD1306_64X32_1F_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 Adafruit_MLX90614 mlx = Adafruit_MLX90614();
 
 float t= 0;
-unsigned long sensorTime = 0;
-unsigned long ledTime = 0;
+uint32_t sensorTime = 0;
+uint32_t ledTime = 0;
 bool ledStatus = false;
 const char* varToPrint = " ";
-unsigned long ledPreviousMillis = 0;
+uint32_t ledPreviousMillis = 0;
 
 // Avoids modulo bias using rejection sampling
 uint32_t randomBounded(uint32_t bound) {
   if (bound == 0) return 0;  // avoid division by zero
 
   uint32_t x;
-  uint32_t limit = UINT32_MAX - (UINT32_MAX % bound);
+  const uint32_t limit =
+    UINT32_MAX - ((UINT32_MAX + 1ULL) % bound);
 
+  // Reject values in the incomplete top interval so every output
+  // has exactly the same probability (avoids modulo bias).
   do {
     x = esp_random();
   } while (x >= limit);  // Retry until unbiased
@@ -93,7 +96,7 @@ void loop() {
   if(millis() - ledPreviousMillis > ledTime){
     ledPreviousMillis = millis();
     // random() — Arduino reference: https://www.arduino.cc/reference/en/language/functions/random-numbers/random/
-    ledTime = random(80, 800);
+    ledTime = randomRange(80, 800);
     ledStatus = !ledStatus;
     digitalWrite(LED, ledStatus);
     Serial.println(ledTime);  
