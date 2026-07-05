@@ -95,7 +95,6 @@ void loop() {
 
   if(millis() - ledPreviousMillis > ledTime){
     ledPreviousMillis = millis();
-    // random() — Arduino reference: https://www.arduino.cc/reference/en/language/functions/random-numbers/random/
     ledTime = randomRange(80, 800);
     ledStatus = !ledStatus;
     digitalWrite(LED, ledStatus);
